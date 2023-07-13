@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "baseUrl": ".",
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+    "paths": {
+      "*": ["src/*"],
+      "tests": ["tests/*"],
+      "@components/*": ["src/components/*"],
+      "@/*": ["src/*"]
+    }
+  },
+  "extends": "@tsconfig/react-native/tsconfig.json" /* Recommended React Native TSConfig base */
+}
