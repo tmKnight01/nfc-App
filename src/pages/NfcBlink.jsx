@@ -59,7 +59,7 @@ function NfcBlink() {
 
   useEffect(() => {
     IntervalrRef.current = setInterval(() => {
-      console.log(isClicking.current);
+      // console.log(isClicking.current);
       if (!isClicking.current) {
         setCount(0);
       }

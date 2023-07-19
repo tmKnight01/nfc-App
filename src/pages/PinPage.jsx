@@ -8,8 +8,10 @@ import {
 } from 'react-native';
 import KeyWord from '../components/KeyWord';
 import NumberInput from '../components/NumberInput';
+import DeviceInfo from 'react-native-device-info';
 import {useNavigation} from '@react-navigation/native';
 import {StackActions} from '@react-navigation/native';
+import {sha3_512} from 'js-sha3';
 import {ROUTE} from '@/utils/constant';
 
 function PinPage() {
@@ -32,6 +34,9 @@ function PinPage() {
 
   const onFinish = () => {
     setLoading(true);
+    DeviceInfo.getAndroidId().then(androidId => {
+      console.log('sha3_512', sha3_512(`${androidId}password`));
+    });
     setTimeout(() => {
       if (Number(numberList.current.join('')) === password) {
         showToast('Success');
