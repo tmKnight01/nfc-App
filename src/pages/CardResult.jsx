@@ -9,8 +9,11 @@ import {
 } from 'react-native';
 import {SwiperFlatList} from 'react-native-swiper-flatlist';
 import Title from '../components/Titile';
+import useTimeNavigate from '@/hooks/useTimeNavigate';
 
 function CardResut() {
+  const panResPonser = useTimeNavigate();
+
   const colors = [
     {
       img: '../images/avator.png',
@@ -35,7 +38,7 @@ function CardResut() {
     },
   ];
   return (
-    <View style={styles.continer}>
+    <View style={styles.continer} {...panResPonser.panHandlers}>
       {/* <View style={styles.resultTop}>
         <Image
           style={styles.resultLogo}

@@ -9,8 +9,7 @@ import {
 import KeyWord from '../components/KeyWord';
 import NumberInput from '../components/NumberInput';
 import DeviceInfo from 'react-native-device-info';
-import {useNavigation} from '@react-navigation/native';
-import {StackActions} from '@react-navigation/native';
+import {useNavigation, StackActions} from '@react-navigation/native';
 import {sha3_512} from 'js-sha3';
 import {ROUTE} from '@/utils/constant';
 

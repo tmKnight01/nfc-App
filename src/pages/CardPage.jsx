@@ -1,11 +1,45 @@
-import React from 'react';
-import {StyleSheet, View, Image, Text, TouchableOpacity} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import React, {useRef, useState} from 'react';
+import {
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  TouchableOpacity,
+  PanResponder,
+} from 'react-native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
+import useTimeNavigate from '@/hooks/useTimeNavigate';
 import {ROUTE} from '@/utils/constant';
+
 function CardPage() {
-  const navigation = useNavigation();
+  const panResPonser = useTimeNavigate();
+  // const [count, setCount] = useState(0);
+  // const IntervalrRef = useRef(null);
+  // const navigation = useNavigation();
+  // const panResPonser = useRef(
+  //   PanResponder.create({
+  //     onStartShouldSetPanResponder: () => true,
+  //     onPanResponderEnd: e => {
+  //       setCount(0);
+  //     },
+  //   }),
+  // ).current;
+
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     IntervalrRef.current = setInterval(() => {
+  //       console.log('count', count);
+  //       if (count == 30) {
+  //         navigation.navigate(ROUTE.PINPAGE);
+  //       }
+  //       setCount(count => count + 1);
+  //     }, 1000);
+  //     return () => clearInterval(IntervalrRef.current);
+  //   }, [count]),
+  // );
+
   return (
-    <View style={styles.container}>
+    <View style={styles.container} {...panResPonser.panHandlers}>
       <Image
         style={styles.logoImg}
         source={require('../images/company_logo.png')}

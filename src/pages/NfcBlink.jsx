@@ -2,7 +2,7 @@ import React, {useEffect, useState, useRef} from 'react';
 import {View, Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NfcManager, {NfcEvents} from 'react-native-nfc-manager';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {showToast} from '@/utils/index';
 import {ROUTE} from '@/utils/constant';
 function NfcBlink() {
@@ -57,16 +57,17 @@ function NfcBlink() {
     }
   };
 
-  useEffect(() => {
-    IntervalrRef.current = setInterval(() => {
-      // console.log(isClicking.current);
-      if (!isClicking.current) {
-        setCount(0);
-      }
-    }, 1000);
-
-    return () => clearInterval(IntervalrRef.current);
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      IntervalrRef.current = setInterval(() => {
+        console.log('isClicking', isClicking.current);
+        if (!isClicking.current) {
+          setCount(0);
+        }
+      }, 1000);
+      return () => clearInterval(IntervalrRef.current);
+    }, []),
+  );
 
   return (
     <View style={styles.container}>
