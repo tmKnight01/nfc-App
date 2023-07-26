@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import getRouter, {routeProps} from 'router/index';
-
+import Loading from '@/pages/Landing';
 const Stack = createNativeStackNavigator();
 const Screen = Stack.Screen;
 
@@ -29,7 +29,9 @@ function App() {
         ))}
       </Stack.Navigator>
     </NavigationContainer>
-  ) : null;
+  ) : (
+    <Loading />
+  );
 }
 
 export default App;

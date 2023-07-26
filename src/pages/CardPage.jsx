@@ -15,7 +15,7 @@ function CardPage() {
   const panResPonser = useTimeNavigate();
   // const [count, setCount] = useState(0);
   // const IntervalrRef = useRef(null);
-  // const navigation = useNavigation();
+  const navigation = useNavigation();
   // const panResPonser = useRef(
   //   PanResponder.create({
   //     onStartShouldSetPanResponder: () => true,

@@ -8,6 +8,7 @@ import CardPage from '@/pages/CardPage';
 import CardResut from '@/pages/CardResult';
 import ErrorPage from '@/pages/ErrorPage';
 import Disclaimer from '@/pages/DisclaimerPage';
+import Resgister from '@/pages/Register';
 
 interface routeProps {
   name: string;
@@ -25,6 +26,13 @@ interface routeProps {
 const header = () => null;
 
 let routes: Array<routeProps> = [
+  {
+    name: "RESGISTER",
+    component: Resgister,
+    options: {
+      header
+    }
+  },
   {
     name: 'HOME',
     component: Home,
@@ -79,7 +87,7 @@ let routes: Array<routeProps> = [
 
 /*
 This code satisfies that when the app retains the pin data, it will automatically jump to the nfc sensing page, 
-but there is no function for the user to automatically delete the pin, so it needs to be improved
+but there is no function for the user to automatically delete the pin, so it needs to be improved(save the  back door)
 */
 const getRouter = async () => {
   try {

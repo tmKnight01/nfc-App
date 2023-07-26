@@ -2,10 +2,11 @@ import React from 'react';
 // import {View, Text, Image} from 'react-native';
 import {StyleSheet, View, Image, Text} from 'react-native';
 import Title from '../components/Titile';
-
+import useTimeNavigate from '@/hooks/useTimeNavigate';
 function ErrorPage() {
+  const panResPonser = useTimeNavigate();
   return (
-    <View style={styles.container}>
+    <View style={styles.container} {...panResPonser}>
       <Title />
       <Text style={styles.content}>
         Sorry, we are not able to locate any record on the blockchain.

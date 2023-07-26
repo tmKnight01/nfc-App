@@ -1,8 +1,11 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
+import useTimeNavigate from '@/hooks/useTimeNavigate';
 import pxToDp from '@/utils/pxToDp';
 
 function Disclaimer() {
+  
+  const panResPonser = useTimeNavigate();
   const texts = [
     `By using our DATM Kiosk service, you haveagreed to our terms and conditions.
     www.mmatrix.io`,
@@ -23,7 +26,7 @@ function Disclaimer() {
   };
 
   return (
-    <View style={styles.contanier}>
+    <View style={styles.contanier} {...panResPonser}>
       <Text style={styles.title}> General disclaimer</Text>
 
       {texts.map((text, i) => (
