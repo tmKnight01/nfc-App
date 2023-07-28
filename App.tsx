@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
+import SplashScreen from 'react-native-splash-screen';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import getRouter, {routeProps} from 'router/index';
-import RNBootSplash from "react-native-bootsplash";
+
 import Loading from '@/pages/Landing';
 const Stack = createNativeStackNavigator();
 const Screen = Stack.Screen;
@@ -14,11 +15,12 @@ function App() {
     (async () => {
       const routes = await getRouter();
       if (routes) setRoutes(routes);
+      SplashScreen.hide();
     })();
   }, []);
 
   return routes.length !== 0 ? (
-    <NavigationContainer onReady={() => RNBootSplash.hide()}>
+    <NavigationContainer>
       <Stack.Navigator>
         {routes.map((item, i) => (
           <Screen
