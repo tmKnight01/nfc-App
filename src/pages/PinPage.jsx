@@ -4,14 +4,17 @@ import {
   View,
   ToastAndroid,
   ActivityIndicator,
+  Image,
   Text,
 } from 'react-native';
 import KeyWord from '../components/KeyWord';
 import NumberInput from '../components/NumberInput';
+import MainBackgroundPage from '@/components/MainBackgroundPage';
 import DeviceInfo from 'react-native-device-info';
-import {useNavigation, StackActions} from '@react-navigation/native';
 import {sha3_512} from 'js-sha3';
+import {useNavigation, StackActions} from '@react-navigation/native';
 import {ROUTE} from '@/utils/constant';
+import pxToDp from 'utils/pxToDp';
 
 function PinPage() {
   const numberList = useRef(['', '', '', '']);
@@ -54,30 +57,44 @@ function PinPage() {
     }, 500);
   };
 
+  const Footer = () => (
+    <Image
+      source={require('../images/company_logo.png')}
+      style={styles.companyLogo}
+    />
+  );
+
+  const Body = () => {
+    return (
+      <>
+        <Text style={styles.title}>Enter Pin</Text>
+        {loading && (
+          <View style={styles.toastPlayer}>
+            <ActivityIndicator animating={loading} size={'large'} />
+          </View>
+        )}
+        <KeyWord click={keywordClick} />
+      </>
+    );
+  };
+
   const showToast = text => {
     ToastAndroid.show(text, ToastAndroid.TOP);
   };
-  return (
-    <View style={styles.container}>
-      <NumberInput inputValues={inputValues} style={{marginTop: 30}} />
-      {loading && (
-        <View style={styles.toastPlayer}>
-          <ActivityIndicator animating={loading} size={'large'} />
-        </View>
-      )}
-      <KeyWord click={keywordClick} />
-      <Text style={styles.pinEnter}>Enter Pin</Text>
-    </View>
-  );
+  return <MainBackgroundPage footer={<Footer />} children={<Body />} />;
 }
 
 const styles = StyleSheet.create({
   container: {
     height: '100%',
     justifyContent: 'space-around',
-    // paddingTop: 20,
-
     overflow: 'hidden',
+  },
+  title: {
+    color: '#fff',
+    fontSize: pxToDp(30),
+    fontWeight: '700',
+    marginVertical: pxToDp(20),
   },
   toastPlayer: {
     width: '100%',
@@ -90,12 +107,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  pinEnter: {
-    fontWeight: '500',
-    fontSize: 36,
-    textAlign: 'center',
-    color: 'black',
-    marginBottom: 20,
+
+  companyLogo: {
+    width: pxToDp(250),
+    height: pxToDp(154),
+    marginBottom: pxToDp(40),
   },
 });
 

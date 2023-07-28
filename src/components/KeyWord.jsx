@@ -3,7 +3,7 @@ import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import pxToDp from '@/utils/pxToDp';
 
 function KeyWord(props) {
-  const wordList = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#'];
+  const wordList = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
   const {click} = props;
 
   return (
@@ -25,33 +25,31 @@ function KeyWord(props) {
 const styles = StyleSheet.create({
   keywords: {
     flex: 1,
-    // backgroundColor: 'pink',
+
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    // paddingHorizontal: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   ItemBox: {
     width: '33%',
-    height: '25%',
     flexDirection: 'row',
     justifyContent: 'center',
   },
   Item: {
-    width: pxToDp(110),
-    height: pxToDp(110),
-    borderRadius: pxToDp(55),
+    width: pxToDp(80),
+    height: pxToDp(80),
+    borderRadius: pxToDp(40),
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    borderColor: 'black',
-    borderWidth: pxToDp(3),
-    marginVertical: 10,
+    backgroundColor: '#fff',
+    marginVertical: pxToDp(11),
   },
   KeyText: {
-    fontSize: pxToDp(48),
+    fontSize: pxToDp(40),
     fontWeight: '500',
-    color:'black'
+    color: 'black',
   },
 });
 
