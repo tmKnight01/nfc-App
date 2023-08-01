@@ -33,13 +33,13 @@ let routes: Array<routeProps> = [
       header
     }
   },
-  {
-    name: 'HOME',
-    component: Home,
-    options: {
-      header,
-    },
-  },
+  // {
+  //   name: 'HOME',
+  //   component: Home,
+  //   options: {
+  //     header,
+  //   },
+  // },
   {
     name: 'NFCBLINK',
     component: NfcBlink,

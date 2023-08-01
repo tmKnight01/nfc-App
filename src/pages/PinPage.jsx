@@ -8,7 +8,6 @@ import {
   Text,
 } from 'react-native';
 import KeyWord from '../components/KeyWord';
-import NumberInput from '../components/NumberInput';
 import MainBackgroundPage from '@/components/MainBackgroundPage';
 import DeviceInfo from 'react-native-device-info';
 import {sha3_512} from 'js-sha3';

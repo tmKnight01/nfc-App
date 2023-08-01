@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import SplashScreen from 'react-native-splash-screen';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 import getRouter, {routeProps} from 'router/index';
 
 import Loading from '@/pages/Landing';
@@ -21,16 +22,18 @@ function App() {
 
   return routes.length !== 0 ? (
     <NavigationContainer>
-      <Stack.Navigator>
-        {routes.map((item, i) => (
-          <Screen
-            key={i}
-            name={item.name}
-            component={item.component}
-            options={item.options}
-          />
-        ))}
-      </Stack.Navigator>
+      <SafeAreaProvider>
+        <Stack.Navigator>
+          {routes.map((item, i) => (
+            <Screen
+              key={i}
+              name={item.name}
+              component={item.component}
+              options={item.options}
+            />
+          ))}
+        </Stack.Navigator>
+      </SafeAreaProvider>
     </NavigationContainer>
   ) : (
     <Loading />

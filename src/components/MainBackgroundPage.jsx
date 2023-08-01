@@ -1,26 +1,48 @@
-import {View, Image, StyleSheet, StatusBar} from 'react-native';
+import {useRef} from 'react';
+import {
+  View,
+  Image,
+  StyleSheet,
+  StatusBar,
+  SafeAreaView,
+  TouchableOpacity,
+} from 'react-native';
+
+import DisclaimerComponent from './DisclaimerComponent';
 import pxToDp from 'utils/pxToDp';
 
 function MainBackgroundPage(props) {
   const {children, footer} = props;
+  const childRef = useRef();
 
   return (
-    <View style={styles.mainContainer}>
-      <StatusBar backgroundColor={'black'} />
-      <View style={styles.top}>
-        <Image
-          style={{width: pxToDp(48), height: pxToDp(48)}}
-          source={require('../images/mark.png')}
-        />
-        <Image
-          style={{width: pxToDp(48), height: pxToDp(48)}}
-          source={require('../images/moreOption.png')}
-        />
-      </View>
-      {children}
+    <>
+      <StatusBar translucent backgroundColor="transparent" />
 
-      {footer}
-    </View>
+      <SafeAreaView
+        style={{
+          ...styles.mainContainer,
+        }}>
+        <DisclaimerComponent ref={childRef} />
+        <View style={styles.top}>
+          <TouchableOpacity
+            onPress={() => childRef.current.fadeIn()}
+            activeOpacity={1}>
+            <Image
+              style={{width: pxToDp(48), height: pxToDp(48)}}
+              source={require('../images/mark.png')}
+            />
+          </TouchableOpacity>
+
+          <Image
+            style={{width: pxToDp(48), height: pxToDp(48)}}
+            source={require('../images/moreOption.png')}
+          />
+        </View>
+        {children}
+        {footer}
+      </SafeAreaView>
+    </>
   );
 }
 
@@ -30,13 +52,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: 'black',
     alignItems: 'center',
+    paddingTop: pxToDp(10),
   },
   top: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: pxToDp(8),
-    paddingTop: pxToDp(8),
+    paddingHorizontal: pxToDp(16),
+    marginTop: pxToDp(16),
     alignItems: 'center',
   },
 });

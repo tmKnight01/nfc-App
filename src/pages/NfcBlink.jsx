@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef, useMemo, useCallback} from 'react';
 import {View, Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NfcManager, {NfcEvents} from 'react-native-nfc-manager';
@@ -7,13 +7,17 @@ import MainBackgroundPage from '@/components/MainBackgroundPage';
 import {showToast} from '@/utils/index';
 import {ROUTE} from '@/utils/constant';
 import pxToDp from 'utils/pxToDp';
+import {useManufacturer} from 'react-native-device-info';
 function NfcBlink() {
   const navigation = useNavigation();
   const [hasNfc, setHasNFC] = useState(null);
   const [count, setCount] = useState(0);
+  const [nfclink, setNfcLink] = useState(0);
   const IntervalrRef = useRef(null);
   const timeOutRef = useRef(null);
   const isClicking = useRef(false);
+
+  const tags = useRef([]);
   useEffect(() => {
     (async () => {
       const deviceIsSupported = await NfcManager.isSupported();
@@ -32,16 +36,25 @@ function NfcBlink() {
   useEffect(() => {
     if (hasNfc) {
       NfcManager.setEventListener(NfcEvents.DiscoverTag, tag => {
-        if (tag) {
-          showToast('nfc read successfully!');
-          navigation.navigate(ROUTE.PINPAGE);
+        if ((tag && nfclink == 0) || (tag && nfclink == 1)) {
+          setNfcLink(val => val + 1);
+          tags.current.push(tag);
         } else showToast('sorry this device does not support nfc！');
       });
     }
     return () => {
       NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
+      setNfcLink(0);
     };
   }, [hasNfc]);
+
+  useEffect(() => {
+    console.log('nfcLink', nfclink);
+    if (nfclink == 2) {
+      showToast('nfc read successfully!');
+      navigation.navigate(ROUTE.PINPAGE);
+    }
+  }, [nfclink]);
 
   const backDoorClick = async () => {
     isClicking.current = true;
@@ -62,25 +75,30 @@ function NfcBlink() {
   useFocusEffect(
     React.useCallback(() => {
       IntervalrRef.current = setInterval(() => {
-        console.log('isClicking', isClicking.current);
+        // console.log('isClicking', isClicking.current);
         if (!isClicking.current) {
           setCount(0);
         }
       }, 1000);
-      return () => clearInterval(IntervalrRef.current);
+      return () => {
+        setNfcLink(0);
+        clearInterval(IntervalrRef.current);
+      };
     }, []),
   );
 
-  const Body = () => {
+  const Body = useCallback(() => {
     return (
       <>
         <View style={{alignItems: 'center', marginTop: pxToDp(-50)}}>
-          <Text style={styles.title}>Welcome,please tap yout NFC card</Text>
+          <Text style={styles.title}>
+            Welcome,please tap yout NFC card {nfclink == 1 && 'again'}
+          </Text>
           <Image style={styles.nfc} source={require('../images/nfc.png')} />
         </View>
       </>
     );
-  };
+  }, [nfclink]);
 
   const Footer = () => {
     return (
@@ -105,32 +123,6 @@ function NfcBlink() {
   };
 
   return (
-    // <View style={styles.container}>
-    //   <Image source={require('../images/nfc.png')} style={styles.nfc} />
-    //   <TouchableOpacity
-    //     onPressIn={backDoorClick}
-    //     onPressOut={() => {
-    //       timeOutRef.current = setTimeout(
-    //         () => (isClicking.current = false),
-    //         1000,
-    //       );
-    //     }}
-    //     style={{alignItems: 'center'}}
-    //     activeOpacity={1}>
-    //     <Image
-    //       source={require('../images/company_logo.png')}
-    //       style={styles.companyLogo}
-    //     />
-    //     <Text style={styles.title}>Welcome,Please tap your NFC card</Text>
-    //   </TouchableOpacity>
-    //   <TouchableOpacity
-    //     onPress={() => {
-    //       navigation.navigate(ROUTE.DISCLAIMER);
-    //     }}>
-    //     <Text style={styles.bottomText}> Disclaimer</Text>
-    //   </TouchableOpacity>
-    // </View>
-
     <>
       <MainBackgroundPage children={<Body />} footer={<Footer />} />
     </>
