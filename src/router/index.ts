@@ -91,7 +91,7 @@ but there is no function for the user to automatically delete the pin, so it nee
 */
 const getRouter = async () => {
   try {
-    const value = await AsyncStorage.getItem('pin');
+    const value = await AsyncStorage.getItem('apikey');
     if (value !== null) {
       const temp = routes[0];
       routes[0] = routes[1];

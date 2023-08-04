@@ -1,4 +1,10 @@
-import {useRef, forwardRef, useImperativeHandle} from 'react';
+import {
+  useRef,
+  forwardRef,
+  useImperativeHandle,
+  useState,
+  useEffect,
+} from 'react';
 import pxToDp from 'utils/pxToDp';
 import React, {
   View,
@@ -6,12 +12,15 @@ import React, {
   Animated,
   Image,
   TouchableWithoutFeedback,
-  FlatList,
-  Text,
 } from 'react-native';
+import {WebView} from 'react-native-webview';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {escape} from 'lodash'
 
 const DisclaimerComponent = forwardRef((_, ref) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [htmlPre, setHtmlPre] = useState('');
+
   const fadeIn = () => {
     Animated.timing(fadeAnim, {
       toValue: 1,
@@ -28,37 +37,50 @@ const DisclaimerComponent = forwardRef((_, ref) => {
     }).start();
   };
 
+
+  const HTMLDecode = text => {
+    let tmp = document.createElement('div');
+    tmp.innerHTML = text;
+    const output = tmp.innerText || tmp.textContent;
+    tmp = null;
+    return output;
+}
   useImperativeHandle(ref, () => ({
     fadeIn,
     fadeOut,
   }));
 
-  const texts = [
-    `By using our DATM Kiosk service, you haveagreed to our terms and conditions.
-    www.mmatrix.io`,
-    'The material in this leaflet is for informationpurposes only and does not provide any legalor investment advice.',
-    'Our DATM Kiosk service offers to sell and re-sell various 3rd party digital assets, It does notconstitute any solicitation or endorsement topurchase such Digital Assets or anyinvestment advice.',
-    'Digital Assets are high-risk, highly volatile, andmay even sustain a total loss of investment.Our company assumes no fiduciaryresponsibility or liability for any consequencesof obtaining these products, wallets, ortransactions.',
-    `The leaflet's material is not allowed tobe reproduced, copied, or circulatedwithout our prior consent from DigitalPlus Asia Ltd.`,
-  ];
+  // const texts = [
+  //   `By using our DATM Kiosk service, you haveagreed to our terms and conditions.
+  //   www.mmatrix.io`,
+  //   'The material in this leaflet is for informationpurposes only and does not provide any legalor investment advice.',
+  //   'Our DATM Kiosk service offers to sell and re-sell various 3rd party digital assets, It does notconstitute any solicitation or endorsement topurchase such Digital Assets or anyinvestment advice.',
+  //   'Digital Assets are high-risk, highly volatile, andmay even sustain a total loss of investment.Our company assumes no fiduciaryresponsibility or liability for any consequencesof obtaining these products, wallets, ortransactions.',
+  //   `The leaflet's material is not allowed tobe reproduced, copied, or circulatedwithout our prior consent from DigitalPlus Asia Ltd.`,
+  // ];
 
-  const renderItem = ({item}) => {
-    return (
-      <View style={CSS.textContainer}>
-        {/* <View style={CSS.radius} /> */}
-        <Text
-          style={{
-            flexWrap: 'wrap',
-            fontSize: pxToDp(30),
-            fontStyle: 'normal',
-            fontWeight: '500',
-            color: 'black'
-          }}>
-          {item}
-        </Text>
-      </View>
-    );
-  };
+  // const renderItem = ({item}) => {
+  //   return (
+  //     <View style={CSS.textContainer}>
+  //       {/* <View style={CSS.radius} /> */}
+  //       <Text
+  //         style={{
+  //           flexWrap: 'wrap',
+  //           fontSize: pxToDp(30),
+  //           fontStyle: 'normal',
+  //           fontWeight: '500',
+  //           color: 'black'
+  //         }}>
+  //         {item}
+  //       </Text>
+  //     </View>
+  //   );
+  // };
+  useEffect(() => {
+    AsyncStorage.getItem('disclaimer_page').then(value => {
+      if (value) setHtmlPre(value);
+    });
+  });
 
   return (
     <Animated.View
@@ -72,9 +94,13 @@ const DisclaimerComponent = forwardRef((_, ref) => {
             />
           </TouchableWithoutFeedback>
         </View>
-        <View style={CSS.content}>
+        {/* <WebView style={CSS.content}>
           <FlatList data={texts} renderItem={renderItem} style={{flex: 1}} />
-        </View>
+        </View> */}
+        <WebView
+          source={{html: escape(htmlPre)}}
+          style={CSS.content}
+        />
       </View>
     </Animated.View>
   );

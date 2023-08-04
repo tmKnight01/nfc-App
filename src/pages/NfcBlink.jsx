@@ -7,17 +7,18 @@ import MainBackgroundPage from '@/components/MainBackgroundPage';
 import {showToast} from '@/utils/index';
 import {ROUTE} from '@/utils/constant';
 import pxToDp from 'utils/pxToDp';
-import {useManufacturer} from 'react-native-device-info';
 function NfcBlink() {
   const navigation = useNavigation();
   const [hasNfc, setHasNFC] = useState(null);
   const [count, setCount] = useState(0);
   const [nfclink, setNfcLink] = useState(0);
+  const [imgUrl, setImgUrl] = useState(null);
   const IntervalrRef = useRef(null);
   const timeOutRef = useRef(null);
   const isClicking = useRef(false);
 
   const tags = useRef([]);
+
   useEffect(() => {
     (async () => {
       const deviceIsSupported = await NfcManager.isSupported();
@@ -49,6 +50,14 @@ function NfcBlink() {
   }, [hasNfc]);
 
   useEffect(() => {
+    AsyncStorage.getItem('merchant_logo').then(value => {
+      if (value) {
+        setImgUrl(value?.split(',')[1]);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
     console.log('nfcLink', nfclink);
     if (nfclink == 2) {
       showToast('nfc read successfully!');
@@ -59,7 +68,6 @@ function NfcBlink() {
   const backDoorClick = async () => {
     isClicking.current = true;
     clearTimeout(timeOutRef.current);
-    console.log('count', count);
     if (Number(count) === 15) {
       try {
         await AsyncStorage.removeItem('pin');
@@ -75,7 +83,6 @@ function NfcBlink() {
   useFocusEffect(
     React.useCallback(() => {
       IntervalrRef.current = setInterval(() => {
-        // console.log('isClicking', isClicking.current);
         if (!isClicking.current) {
           setCount(0);
         }
@@ -113,10 +120,13 @@ function NfcBlink() {
             );
           }}
           activeOpacity={1}>
-          <Image
-            source={require('../images/company_logo.png')}
-            style={styles.companyLogo}
-          />
+          {imgUrl && (
+            <Image
+              key={imgUrl}
+              source={{uri: 'data:image/png;base64,' + imgUrl}}
+              style={styles.companyLogo}
+            />
+          )}
         </TouchableOpacity>
       </>
     );

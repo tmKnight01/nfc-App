@@ -13,7 +13,7 @@ function App() {
   const [routes, setRoutes] = useState<Array<routeProps>>([]);
 
   React.useEffect(() => {
-    (async () => {
+    (async () => { 
       const routes = await getRouter();
       if (routes) setRoutes(routes);
       SplashScreen.hide();

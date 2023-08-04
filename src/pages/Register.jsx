@@ -1,20 +1,40 @@
+import {useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
-
 import pxToDp from '@/utils/pxToDp';
 import {sha3_512} from 'js-sha3';
 import DeviceInfo from 'react-native-device-info';
 import BackGroundPage from '@/components/BackGroundPage';
 import QRCode from 'react-native-qrcode-svg';
-import {useEffect, useRef, useState} from 'react';
+import {getRegisterLanding} from '@/services/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {showToast} from '@/utils';
 
 function Resgister() {
   const qrRef = useRef();
   const [isShowQR, setIsShowQR] = useState(false);
 
   useEffect(() => {
-    DeviceInfo.getAndroidId().then(androidId => {
-      qrRef.current = sha3_512(androidId);
-    });
+    (async () => {
+      DeviceInfo.getAndroidId().then(async androidId => {
+        qrRef.current = sha3_512(androidId);
+        console.log('android Id', qrRef.current);
+        if (qrRef.current) {
+          try {
+            const data = await getRegisterLanding({a: qrRef.current});
+            console.log('data', data);
+            if (data) {
+              Object.keys(data).forEach(key => {
+                const value = data[key];
+                AsyncStorage.setItem(key, JSON.stringify(value));
+              });
+            }
+          } catch (err) {
+            showToast(err);
+            console.log('err', err);
+          }
+        }
+      });
+    })();
   }, []);
 
   const showQR = () => setIsShowQR(true);
