@@ -1,48 +1,28 @@
-import React, {useRef, useState} from 'react';
-import {
-  StyleSheet,
-  View,
-  Image,
-  Text,
-  TouchableOpacity,
-  PanResponder,
-} from 'react-native';
-import {useNavigation, useFocusEffect} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, View, Image, Text, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import useTimeNavigate from '@/hooks/useTimeNavigate';
 import {ROUTE} from '@/utils/constant';
 
 function CardPage() {
   const panResPonser = useTimeNavigate();
-  // const [count, setCount] = useState(0);
-  // const IntervalrRef = useRef(null);
   const navigation = useNavigation();
-  // const panResPonser = useRef(
-  //   PanResponder.create({
-  //     onStartShouldSetPanResponder: () => true,
-  //     onPanResponderEnd: e => {
-  //       setCount(0);
-  //     },
-  //   }),
-  // ).current;
+  const [imgUrl, setImgUrl] = useState(null);
 
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     IntervalrRef.current = setInterval(() => {
-  //       console.log('count', count);
-  //       if (count == 30) {
-  //         navigation.navigate(ROUTE.PINPAGE);
-  //       }
-  //       setCount(count => count + 1);
-  //     }, 1000);
-  //     return () => clearInterval(IntervalrRef.current);
-  //   }, [count]),
-  // );
+  useEffect(() => {
+    AsyncStorage.getItem('merchant_logo').then(value => {
+      if (value) {
+        setImgUrl(value?.split(',')[1]);
+      }
+    });
+  }, []);
 
   return (
     <View style={styles.container} {...panResPonser.panHandlers}>
       <Image
         style={styles.logoImg}
-        source={require('../images/company_logo.png')}
+        source={{uri: 'data:image/png;base64,' + imgUrl}}
       />
       <TouchableOpacity onPress={() => navigation.navigate(ROUTE.CARDRESULT)}>
         <View style={styles.buttom}>

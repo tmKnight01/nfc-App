@@ -18,7 +18,6 @@ function MainBackgroundPage(props) {
   return (
     <>
       <StatusBar translucent backgroundColor="transparent" />
-
       <SafeAreaView
         style={{
           ...styles.mainContainer,

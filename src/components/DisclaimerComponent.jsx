@@ -14,8 +14,8 @@ import React, {
   TouchableWithoutFeedback,
 } from 'react-native';
 import {WebView} from 'react-native-webview';
+import {renderHTML} from '@/utils/index';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {escape} from 'lodash'
 
 const DisclaimerComponent = forwardRef((_, ref) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -37,14 +37,6 @@ const DisclaimerComponent = forwardRef((_, ref) => {
     }).start();
   };
 
-
-  const HTMLDecode = text => {
-    let tmp = document.createElement('div');
-    tmp.innerHTML = text;
-    const output = tmp.innerText || tmp.textContent;
-    tmp = null;
-    return output;
-}
   useImperativeHandle(ref, () => ({
     fadeIn,
     fadeOut,
@@ -97,10 +89,7 @@ const DisclaimerComponent = forwardRef((_, ref) => {
         {/* <WebView style={CSS.content}>
           <FlatList data={texts} renderItem={renderItem} style={{flex: 1}} />
         </View> */}
-        <WebView
-          source={{html: escape(htmlPre)}}
-          style={CSS.content}
-        />
+        <WebView source={{html: renderHTML(htmlPre)}} style={CSS.content} />
       </View>
     </Animated.View>
   );

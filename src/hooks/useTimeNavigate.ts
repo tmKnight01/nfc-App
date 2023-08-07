@@ -1,13 +1,19 @@
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from 'react';
 import { PanResponder, PanResponderInstance } from 'react-native';
-import { useNavigation, useFocusEffect, StackActions } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+    useNavigation,
+    useFocusEffect,
+    StackActions,
+} from '@react-navigation/native';
 import { ROUTE } from '@/utils/constant';
-
 
 function useTimeNavigate(): PanResponderInstance {
     const [count, setCount] = useState(0);
+    const timeoutRef = useRef(3000);
     const navigation = useNavigation();
     const IntervalrRef = useRef<NodeJS.Timeout>();
+
     const panResPonser = useRef(
         PanResponder.create({
             onStartShouldSetPanResponder: () => true,
@@ -16,11 +22,22 @@ function useTimeNavigate(): PanResponderInstance {
             },
         }),
     ).current;
+
+    //   useEffect(() => {
+    //     try {
+    //       AsyncStorage.getItem('timeout').then(value => {
+    //         if (value && Number(value) > 0) {
+    //           timeoutRef.current = Number(value);
+    //         }
+    //       });
+    //     } catch (err) {}
+    //   }, []);
+
     useFocusEffect(
         useCallback(() => {
             IntervalrRef.current = setInterval(() => {
-                if (count == 30) {
-                    navigation.dispatch(StackActions.replace(ROUTE.NFCBLINK))
+                if (count == timeoutRef.current) {
+                    navigation.dispatch(StackActions.replace(ROUTE.NFCBLINK));
                 }
                 setCount(count => count + 1);
             }, 1000);
@@ -29,10 +46,6 @@ function useTimeNavigate(): PanResponderInstance {
     );
 
     return panResPonser;
-
 }
-
-
-
 
 export default useTimeNavigate;

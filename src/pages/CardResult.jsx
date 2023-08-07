@@ -7,13 +7,13 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import {SwiperFlatList} from 'react-native-swiper-flatlist';
+
+import PagerView from 'react-native-pager-view';
 import Title from '../components/Titile';
 import useTimeNavigate from '@/hooks/useTimeNavigate';
 
 function CardResut() {
   const panResPonser = useTimeNavigate();
-
   const colors = [
     {
       img: '../images/avator.png',
@@ -37,37 +37,37 @@ function CardResut() {
       buttonText: 'Bronze',
     },
   ];
+
+  const PageRender = () => (
+    <PagerView style={{flex: 1, backgroundColor: 'pink'}} initialPage={0}>
+      {colors?.map((item, index) => (
+        <View key={index} style={[styles.child, {backgroundColor: item.color}]}>
+          <Image
+            style={{width: 200, height: 150, marginTop: 40}}
+            source={require('../images/avator.png')}
+          />
+          <Text style={styles.swiperText}>{item.desc}</Text>
+          <TouchableOpacity>
+            <Text style={[styles.button, {backgroundColor: item.color}]}>
+              {item?.buttonText}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      ))}
+    </PagerView>
+  );
+
   return (
     <View style={styles.continer} {...panResPonser.panHandlers}>
-      {/* <View style={styles.resultTop}>
+      <View style={styles.resultTop}>
         <Image
           style={styles.resultLogo}
           source={require('../images/logo.png')}
         />
         <Text style={styles.resultText}>NFC Wallet</Text>
-      </View> */}
+      </View>
       <Title />
-      <SwiperFlatList
-        autoplayDelay={2}
-        autoplayLoop
-        index={2}
-        // showPagination
-        data={colors}
-        renderItem={({item}) => (
-          <View style={styles.child}>
-            <Image
-              style={{width: 200, height: 150, marginTop: 40}}
-              source={require('../images/avator.png')}
-            />
-            <Text style={styles.swiperText}>{item.desc}</Text>
-            <TouchableOpacity>
-              <Text style={[styles.button, {backgroundColor: item.color}]}>
-                {item.buttonText}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      />
+      {PageRender()}
     </View>
   );
 }
@@ -77,6 +77,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingTop: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   resultTop: {
     flexDirection: 'row',
@@ -93,7 +95,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '500',
   },
-  child: {width, alignItems: 'center'},
+  child: {width: '100%', alignItems: 'center'},
   text: {fontSize: width * 0.5, textAlign: 'center'},
   swiperText: {
     textAlign: 'center',
@@ -116,3 +118,38 @@ const styles = StyleSheet.create({
 });
 
 export default CardResut;
+{
+  /* <View style={styles.continer} {...panResPonser.panHandlers}>
+<View style={styles.resultTop}>
+  <Image
+    style={styles.resultLogo}
+    source={require('../images/logo.png')}
+  />
+  <Text style={styles.resultText}>NFC Wallet</Text>
+</View>
+<Title />
+<SwiperFlatList
+  autoplayDelay={2}
+  autoplayLoop
+  index={2}
+  data={colors}
+  style={{width: '90%'}}
+  renderItem={({item}) => (
+    <View style={[styles.child, {backgroundColor: item.color}]}>
+      <Image
+        style={{width: 200, height: 150, marginTop: 40}}
+        source={require('../images/avator.png')}
+      />
+      <Text style={styles.swiperText}>{item.desc}</Text>
+      <TouchableOpacity>
+        <Text style={[styles.button, {backgroundColor: item.color}]}>
+          {item.buttonText}
+        </Text>
+      </TouchableOpacity>
+    </View>
+  )}
+/>
+
+
+</View> */
+}

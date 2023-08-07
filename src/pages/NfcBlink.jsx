@@ -58,7 +58,7 @@ function NfcBlink() {
   }, []);
 
   useEffect(() => {
-    console.log('nfcLink', nfclink);
+  
     if (nfclink == 2) {
       showToast('nfc read successfully!');
       navigation.navigate(ROUTE.PINPAGE);

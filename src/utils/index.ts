@@ -5,4 +5,8 @@ const showToast = (text: string) => {
     ToastAndroid.show(text, ToastAndroid.TOP);
 };
 
-export { showToast }
+
+const renderHTML = (content: string) =>
+    content?.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+
+export { showToast, renderHTML }
