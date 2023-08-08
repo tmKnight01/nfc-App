@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   StyleSheet,
   View,
@@ -9,56 +9,34 @@ import {
 } from 'react-native';
 
 import PagerView from 'react-native-pager-view';
-import Title from '../components/Titile';
 import useTimeNavigate from '@/hooks/useTimeNavigate';
+import {get} from 'lodash-es';
+import {getProfileAsset} from 'services/api';
+import AssetRenderItem from '@/components/AssetRenderItem';
+import pxToDp from 'utils/pxToDp';
 
 function CardResut() {
-  const panResPonser = useTimeNavigate();
-  const colors = [
-    {
-      img: '../images/avator.png',
-      desc: 'Your are the owner of Other text',
-      icontext: 'Siler',
-      color: 'gray',
-      buttonText: 'Silver',
-    },
-    {
-      img: '../images/avator.png',
-      desc: 'Your are the owner of Other text1',
-      icontext: 'Gold',
-      color: 'yellow',
-      buttonText: 'Gold',
-    },
-    {
-      img: '../images/avator.png',
-      desc: 'Your are the owner of Other text2',
-      icontext: 'Gold',
-      color: 'orange',
-      buttonText: 'Bronze',
-    },
-  ];
+  const [assetArr, setAssetArr] = useState([]);
 
-  const PageRender = () => (
-    <PagerView style={{flex: 1, backgroundColor: 'pink'}} initialPage={0}>
-      {colors?.map((item, index) => (
-        <View key={index} style={[styles.child, {backgroundColor: item.color}]}>
-          <Image
-            style={{width: 200, height: 150, marginTop: 40}}
-            source={require('../images/avator.png')}
-          />
-          <Text style={styles.swiperText}>{item.desc}</Text>
-          <TouchableOpacity>
-            <Text style={[styles.button, {backgroundColor: item.color}]}>
-              {item?.buttonText}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      ))}
-    </PagerView>
-  );
+  useEffect(() => {
+    getProfileAsset(
+      {
+        d: 'hash004',
+        a: '12345678',
+      },
+      'Bearer 2wyEGL6X9PlBLN1K9Jiekc3wt8wrIS6ZucQkreM4',
+    )
+      .then(value => {
+        console.log('value', value);
+        if (Array.isArray(value.d)) setAssetArr(value.d);
+      })
+      .catch(err => {
+        console.log('err', err);
+      });
+  }, []);
 
   return (
-    <View style={styles.continer} {...panResPonser.panHandlers}>
+    <View style={styles.continer}>
       <View style={styles.resultTop}>
         <Image
           style={styles.resultLogo}
@@ -66,8 +44,35 @@ function CardResut() {
         />
         <Text style={styles.resultText}>NFC Wallet</Text>
       </View>
-      <Title />
-      {PageRender()}
+      {assetArr && assetArr.length > 0 ? (
+        <PagerView style={{flex: 1, width: '100%'}} initialPage={0}>
+          {assetArr?.map((item, index) => (
+            <View
+              key={index}
+              style={[styles.child, {backgroundColor: item.color}]}>
+              <AssetRenderItem item={item} />
+              <Text style={styles.swiperText}>{get(item, 'c.others', '')}</Text>
+              <TouchableOpacity>
+                <Text style={[styles.button, {backgroundColor: item.color}]}>
+                  {get(item, 'c.tier', '')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </PagerView>
+      ) : (
+        <Text
+          style={{
+            textAlign: 'center',
+            textAlign: 'center',
+            fontSize: pxToDp(30),
+            fontWeight: '500',
+            marginTop: pxToDp(50),
+           
+          }}>
+          No record result.
+        </Text>
+      )}
     </View>
   );
 }
@@ -77,7 +82,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingTop: 30,
-    justifyContent: 'center',
     alignItems: 'center',
   },
   resultTop: {

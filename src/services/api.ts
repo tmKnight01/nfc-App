@@ -18,10 +18,15 @@ interface asssetResponse {
 
 
 // get asset 
-export const getProfileAsset = (data: Record<string, unknown>, apiKey: string): Promise<asssetResponse> => intance.post('/api/v0.1/asset', {
-    headers: { "Content-Type": 'application/json', "Accept": "application/json", "Authorization": apiKey },
-    data
-});
+export const getProfileAsset = (data: Record<string, unknown>, apiKey: string): Promise<asssetResponse> => intance.post('/api/v0.1/asset',
+    data,
+    {
+        headers: {
+            "Content-Type": 'application/json', "Accept": "application/json", "Authorization": apiKey
+        }
+    }
+
+);
 
 
 

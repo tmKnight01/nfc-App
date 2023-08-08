@@ -10,6 +10,7 @@ const intance = axios.create({
 intance.interceptors.request.use(
     (config) => {
         // 后期需要进行auth鉴权
+        console.log('config', config);
         return config;
     },
     (error) => {
