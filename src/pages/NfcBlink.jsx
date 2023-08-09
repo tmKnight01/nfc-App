@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef, useMemo, useCallback} from 'react';
+import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {View, Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NfcManager, {NfcEvents} from 'react-native-nfc-manager';
@@ -7,6 +7,7 @@ import MainBackgroundPage from '@/components/MainBackgroundPage';
 import {showToast} from '@/utils/index';
 import {ROUTE} from '@/utils/constant';
 import pxToDp from 'utils/pxToDp';
+
 function NfcBlink() {
   const navigation = useNavigation();
   const [hasNfc, setHasNFC] = useState(null);
@@ -58,10 +59,12 @@ function NfcBlink() {
   }, []);
 
   useEffect(() => {
-  
     if (nfclink == 2) {
       showToast('nfc read successfully!');
-      navigation.navigate(ROUTE.PINPAGE);
+      console.log('tags', tags.current);
+      navigation.navigate(ROUTE.PINPAGE, {
+        nfcTag: tags.current[0],
+      });
     }
   }, [nfclink]);
 

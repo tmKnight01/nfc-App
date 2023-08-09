@@ -23,11 +23,11 @@ intance.interceptors.response.use(
         // 服务端统一返回数据格式，此处进行数据过滤
         if (response.status === 200) return response?.data;
 
-        throw Error(response.status.toString());
+        throw Error(response?.status?.toString() || "Server Error");
     },
     (error) => {
         console.log('error', error)
-        return Promise.reject(error);
+        return Promise.reject(error?.message || 'Internal Server Error');
     }
 );
 

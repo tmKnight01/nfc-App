@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -7,33 +7,69 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-
+import DeviceInfo from 'react-native-device-info';
 import PagerView from 'react-native-pager-view';
-import useTimeNavigate from '@/hooks/useTimeNavigate';
 import {get} from 'lodash-es';
 import {getProfileAsset} from 'services/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import AssetRenderItem from '@/components/AssetRenderItem';
+import {sha3_512} from 'js-sha3';
 import pxToDp from 'utils/pxToDp';
+import {showToast} from 'utils';
 
-function CardResut() {
+function CardResut({route}) {
   const [assetArr, setAssetArr] = useState([]);
+  const [version, setVersion] = useState('');
+  const {nfcToPin, decviceID} = route.params;
 
   useEffect(() => {
-    getProfileAsset(
-      {
-        d: 'hash004',
-        a: '12345678',
-      },
-      'Bearer 2wyEGL6X9PlBLN1K9Jiekc3wt8wrIS6ZucQkreM4',
-    )
-      .then(value => {
-        console.log('value', value);
-        if (Array.isArray(value.d)) setAssetArr(value.d);
-      })
-      .catch(err => {
+    (async () => {
+      try {
+        const apiKey = await AsyncStorage.getItem('apikey');
+        console.log('by hashed decviceId', sha3_512(decviceID));
+        console.log('nffTopin', sha3_512(nfcToPin));
+        console.log('Authorization1', 'Bearer ' + apiKey?.replace(/\"/g, ''));
+        const data = await getProfileAsset(
+          {
+            d: sha3_512(nfcToPin),
+            a: sha3_512(decviceID),
+          },
+          `Bearer ${apiKey.replace(/\"/g, '')}`,
+        );
+        if (Array.isArray(data?.d)) setAssetArr(data?.d);
+        if (data?.v) setVersion(data?.v);
+      } catch (err) {
         console.log('err', err);
-      });
+        showToast(err);
+      }
+    })();
   }, []);
+
+  useEffect(() => {
+    if (version) {
+      // 当版本更新后，更新app的配置项
+      // DeviceInfo.getAndroidId().then(async androidId => {
+
+      // const hashDecviceID = sha3_512(decviceID);
+      // if (hashDecviceID) {
+      (async () => {
+        try {
+          const data = await getRegisterLanding({a: sha3_512(decviceID)});
+          if (data) {
+            Object.keys(data).forEach(key => {
+              const value = data[key];
+              AsyncStorage.setItem(key, JSON.stringify(value));
+            });
+          }
+        } catch (err) {
+          showToast(err);
+          console.log('err', err);
+        }
+      })();
+      // }
+      // });
+    }
+  }, [version]);
 
   return (
     <View style={styles.continer}>
@@ -68,7 +104,6 @@ function CardResut() {
             fontSize: pxToDp(30),
             fontWeight: '500',
             marginTop: pxToDp(50),
-           
           }}>
           No record result.
         </Text>

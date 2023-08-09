@@ -33,13 +33,6 @@ let routes: Array<routeProps> = [
       header
     }
   },
-  // {
-  //   name: 'HOME',
-  //   component: Home,
-  //   options: {
-  //     header,
-  //   },
-  // },
   {
     name: 'NFCBLINK',
     component: NfcBlink,
@@ -89,26 +82,25 @@ let routes: Array<routeProps> = [
 This code satisfies that when the app retains the pin data, it will automatically jump to the nfc sensing page, 
 but there is no function for the user to automatically delete the pin, so it needs to be improved(save the  back door)
 */
-const getRouter = async () => {
-  try {
-    const value = await AsyncStorage.getItem('apikey');
-    if (value !== null) {
-      const temp = routes[0];
-      routes[0] = routes[1];
-      routes[1] = temp;
+// const getRouter = async () => {
+//   try {
+//     const value = await AsyncStorage.getItem('apikey');
+//     console.log('apiKey', value);
+//     if (value !== null) {
+//       const temp = routes[0];
+//       routes[0] = routes[1];
+//       routes[1] = temp;
 
 
-    }
-    return routes;
+//     }
+//     return routes;
 
 
-  } catch (e) {
-    console.log('e', e);
+//   } catch (e) {
+//     console.log('e', e);
 
-  }
+//   }
+// }
 
-
-}
-
-export default getRouter;
+export { routes };
 export type { routeProps }

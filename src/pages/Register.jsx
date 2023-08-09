@@ -21,7 +21,6 @@ function Resgister() {
         if (qrRef.current) {
           try {
             const data = await getRegisterLanding({a: qrRef.current});
-            console.log('data', data);
             if (data) {
               Object.keys(data).forEach(key => {
                 const value = data[key];

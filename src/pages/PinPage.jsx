@@ -15,13 +15,16 @@ import {useNavigation, StackActions} from '@react-navigation/native';
 import {ROUTE} from '@/utils/constant';
 import pxToDp from 'utils/pxToDp';
 
-function PinPage() {
+
+function PinPage({route}) {
   const numberList = useRef(['', '', '', '']);
   const [inputValues, setInputValues] = useState(['', '', '', '']);
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
   const password = 5087;
 
+  const {nfcTag} = route.params;
+  console.log('nfcTag', nfcTag);
   const keywordClick = content => {
     for (let i = 0; i < numberList.current.length; i++) {
       if (numberList.current[i] === '') {
@@ -36,24 +39,26 @@ function PinPage() {
   const onFinish = () => {
     setLoading(true);
     DeviceInfo.getAndroidId().then(androidId => {
-      console.log('sha3_512', sha3_512(`${androidId}password`));
-    });
-    setTimeout(() => {
-      if (Number(numberList.current.join('')) === password) {
-        showToast('Success');
-        navigation.dispatch(
-          StackActions.replace(ROUTE.CARDPAGE, {
-            user: 'jane',
-          }),
-        );
-      } else {
-        showToast('Password Error');
-      }
 
-      setLoading(false);
-      numberList.current = ['', '', '', ''];
-      setInputValues([...numberList.current]);
-    }, 500);
+      setTimeout(() => {
+        const pin = Number(numberList.current.join(''));
+        if (pin === password) {
+          showToast('Success');
+          navigation.dispatch(
+            StackActions.replace(ROUTE.CARDPAGE, {
+              nfcToPin: `${nfcTag?.id}${pin}`,
+              decviceID: sha3_512(androidId),
+            }),
+          );
+        } else {
+          showToast('Password Error');
+        }
+
+        setLoading(false);
+        numberList.current = ['', '', '', ''];
+        setInputValues([...numberList.current]);
+      }, 500);
+    });
   };
 
   const Footer = () => (

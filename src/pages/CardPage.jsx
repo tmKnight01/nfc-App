@@ -5,10 +5,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import useTimeNavigate from '@/hooks/useTimeNavigate';
 import {ROUTE} from '@/utils/constant';
 
-function CardPage() {
+function CardPage({route}) {
   const panResPonser = useTimeNavigate();
   const navigation = useNavigation();
   const [imgUrl, setImgUrl] = useState(null);
+
+  const {nfcToPin, decviceID} = route.params;
 
   useEffect(() => {
     AsyncStorage.getItem('merchant_logo').then(value => {
@@ -24,7 +26,10 @@ function CardPage() {
         style={styles.logoImg}
         source={{uri: 'data:image/png;base64,' + imgUrl}}
       />
-      <TouchableOpacity onPress={() => navigation.navigate(ROUTE.CARDRESULT)}>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate(ROUTE.CARDRESULT, {nfcToPin, decviceID})
+        }>
         <View style={styles.buttom}>
           <Text style={styles.buttomText}>{'Check'}</Text>
           <Text style={styles.buttomText}>{'Membership'}</Text>
