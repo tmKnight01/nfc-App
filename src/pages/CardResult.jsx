@@ -7,7 +7,6 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import DeviceInfo from 'react-native-device-info';
 import PagerView from 'react-native-pager-view';
 import {get} from 'lodash-es';
 import {getProfileAsset} from 'services/api';
@@ -34,7 +33,7 @@ function CardResut({route}) {
             d: sha3_512(nfcToPin),
             a: sha3_512(decviceID),
           },
-          `Bearer ${apiKey.replace(/\"/g, '')}`,
+          `Bearer ${apiKey?.replace(/\"/g, '')}`,
         );
         if (Array.isArray(data?.d)) setAssetArr(data?.d);
         if (data?.v) setVersion(data?.v);

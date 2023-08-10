@@ -6,12 +6,16 @@ import DeviceInfo from 'react-native-device-info';
 import BackGroundPage from '@/components/BackGroundPage';
 import QRCode from 'react-native-qrcode-svg';
 import {getRegisterLanding} from '@/services/api';
+import {useNavigation, StackActions} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {ROUTE} from '@/utils/constant';
 import {showToast} from '@/utils';
 
 function Resgister() {
   const qrRef = useRef();
   const [isShowQR, setIsShowQR] = useState(false);
+  const navigation = useNavigation();
+  const [registerOrNfc, setRegisterOrNfc] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -20,8 +24,10 @@ function Resgister() {
         console.log('android Id', qrRef.current);
         if (qrRef.current) {
           try {
-            const data = await getRegisterLanding({a: qrRef.current});
+            const data = await getRegisterLanding({a: qrRef.current });
+            console.log('data', data);
             if (data) {
+              setRegisterOrNfc(true);
               Object.keys(data).forEach(key => {
                 const value = data[key];
                 AsyncStorage.setItem(key, JSON.stringify(value));
@@ -36,7 +42,13 @@ function Resgister() {
     })();
   }, []);
 
-  const showQR = () => setIsShowQR(true);
+  const showQR = () => {
+    if (!registerOrNfc) {
+      setIsShowQR(true);
+    } else {
+      navigation.dispatch(StackActions.replace(ROUTE.NFCBLINK));
+    }
+  };
 
   const FirstText = 'Please register device first';
   const QRText = `Scan QR code for complete registrantion.`;
@@ -63,7 +75,7 @@ function Resgister() {
           activeOpacity={0.5}>
           <Text
             style={{fontSize: pxToDp(30), color: '#fff', fontWeight: '500'}}>
-            Register
+            {!registerOrNfc ? 'Register' : 'ToNFC'}
           </Text>
         </TouchableOpacity>
       )}

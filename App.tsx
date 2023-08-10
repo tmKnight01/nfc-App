@@ -4,20 +4,24 @@ import SplashScreen from 'react-native-splash-screen';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {routeProps, routes} from 'router/index';
+import {routes} from 'router/index';
 
-import Loading from '@/pages/Landing';
 const Stack = createNativeStackNavigator();
 const Screen = Stack.Screen;
 
 function App() {
-  // const [routes, setRoutes] = useState<Array<routeProps>>([]);
-  const [initName, setInitName] = useState<string>('');
+  const [initName, setInitName] = useState<string>('RESGISTER');
   React.useEffect(() => {
     (async () => {
-      // const routes = await getRouter();
-      const value = await AsyncStorage.getItem('apikey');
-      setInitName(value ? 'NFCBLINK' : 'RESGISTER');
+      try {
+        // await AsyncStorage.clear();
+        // SplashScreen.hide();
+        const value = await AsyncStorage.getItem('apikey');
+        setInitName(value ? 'NFCBLINK' : 'RESGISTER');
+      } catch (err) {
+        console.log('err', err);
+      }
+
       //
     })();
   }, []);

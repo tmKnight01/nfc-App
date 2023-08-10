@@ -73,10 +73,10 @@ function NfcBlink() {
     clearTimeout(timeOutRef.current);
     if (Number(count) === 15) {
       try {
-        await AsyncStorage.removeItem('pin');
-        navigation.navigate(ROUTE.HOME);
+        await AsyncStorage.clear();
+        navigation.navigate(ROUTE.RESGISTER);
       } catch (err) {
-        console.log('err', err);
+        console.log('Error clearing data: ', err);
       }
     } else {
       setCount(count => count + 1);
