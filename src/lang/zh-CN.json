@@ -1,0 +1,8 @@
+{
+    "welcome": "欢迎",
+    "tap": "请轻触您的 NFC 卡",
+    "tapAgain": "请再次轻触您的NFC 卡",
+    "pin": "请输入 Pin",
+    "nfcWallet": "NFC 钱包",
+    "noRecord": "无记录结果"
+}

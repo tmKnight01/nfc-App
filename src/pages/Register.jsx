@@ -5,7 +5,7 @@ import {sha3_512} from 'js-sha3';
 import DeviceInfo from 'react-native-device-info';
 import BackGroundPage from '@/components/BackGroundPage';
 import QRCode from 'react-native-qrcode-svg';
-import {getRegisterLanding} from '@/services/api';
+import {getRegisterLanding, setConfigurable} from '@/services/api';
 import {useNavigation, StackActions} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ROUTE} from '@/utils/constant';
@@ -19,26 +19,42 @@ function Resgister() {
 
   useEffect(() => {
     (async () => {
-      DeviceInfo.getAndroidId().then(async androidId => {
+      try {
+        const androidId = await DeviceInfo.getAndroidId();
         qrRef.current = sha3_512(androidId);
-        console.log('android Id', qrRef.current);
-        if (qrRef.current) {
-          try {
-            const data = await getRegisterLanding({a: qrRef.current });
-            console.log('data', data);
-            if (data) {
-              setRegisterOrNfc(true);
-              Object.keys(data).forEach(key => {
-                const value = data[key];
-                AsyncStorage.setItem(key, JSON.stringify(value));
-              });
-            }
-          } catch (err) {
-            showToast(err);
-            console.log('err', err);
-          }
+        const obj = await getRegisterLanding();
+        if (obj && obj.authkey) {
+          setRegisterOrNfc(true);
+          const data = await setConfigurable(
+            `Bearer ${obj.authkey.replace(/\"/, '')}`,
+          );
+          Object.keys(data).forEach(key => {
+            const value = data[key];
+            AsyncStorage.setItem(key, JSON.stringify(value));
+          });
+
+          AsyncStorage.setItem('apikey', obj.authkey);
         }
-      });
+      } catch (err) {
+        console.log('err:', err);
+      }
+      // DeviceInfo.getAndroidId().then(async androidId => {
+      //   if (qrRef.current) {
+      //     try {
+      //       console.log('data', data);
+      //       if (key) {
+      //         setRegisterOrNfc(true);
+      //         Object.keys(data).forEach(key => {
+      //           const value = data[key];
+      //           AsyncStorage.setItem(key, JSON.stringify(value));
+      //         });
+      //       }
+      //     } catch (err) {
+      //       showToast(err);
+      //       console.log('err', err);
+      //     }
+      //   }
+      // });
     })();
   }, []);
 

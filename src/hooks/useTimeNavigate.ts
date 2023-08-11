@@ -23,15 +23,15 @@ function useTimeNavigate(): PanResponderInstance {
         }),
     ).current;
 
-    //   useEffect(() => {
-    //     try {
-    //       AsyncStorage.getItem('timeout').then(value => {
-    //         if (value && Number(value) > 0) {
-    //           timeoutRef.current = Number(value);
-    //         }
-    //       });
-    //     } catch (err) {}
-    //   }, []);
+      useEffect(() => {
+        try {
+          AsyncStorage.getItem('timeout').then(value => {
+            if (value && Number(value) > 0) {
+              timeoutRef.current = Number(value);
+            }
+          });
+        } catch (err) {}
+      }, []);
 
     useFocusEffect(
         useCallback(() => {

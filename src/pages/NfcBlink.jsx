@@ -7,6 +7,7 @@ import MainBackgroundPage from '@/components/MainBackgroundPage';
 import {showToast} from '@/utils/index';
 import {ROUTE} from '@/utils/constant';
 import pxToDp from 'utils/pxToDp';
+import {get} from 'lodash-es';
 
 function NfcBlink() {
   const navigation = useNavigation();
@@ -17,7 +18,6 @@ function NfcBlink() {
   const IntervalrRef = useRef(null);
   const timeOutRef = useRef(null);
   const isClicking = useRef(false);
-
   const tags = useRef([]);
 
   useEffect(() => {
@@ -60,11 +60,17 @@ function NfcBlink() {
 
   useEffect(() => {
     if (nfclink == 2) {
-      showToast('nfc read successfully!');
-      console.log('tags', tags.current);
-      navigation.navigate(ROUTE.PINPAGE, {
-        nfcTag: tags.current[0],
-      });
+      console.log('tags.current', tags.current);
+      if (get(tags, 'current[0].id', 1) === get(tags, 'current[1].id', 2)) {
+        showToast('nfc read successfully!');
+        console.log('tags', tags.current);
+        navigation.navigate(ROUTE.PINPAGE, {
+          nfcTag: tags.current[0],
+        });
+      } else {
+        showToast('The two verifications are inconsistent, please re-verify!');
+        setNfcLink(0);
+      }
     }
   }, [nfclink]);
 
@@ -80,6 +86,7 @@ function NfcBlink() {
       }
     } else {
       setCount(count => count + 1);
+      setNfcLink(0);
     }
   };
 
@@ -102,7 +109,7 @@ function NfcBlink() {
       <>
         <View style={{alignItems: 'center', marginTop: pxToDp(-50)}}>
           <Text style={styles.title}>
-            Welcome,please tap yout NFC card {nfclink == 1 && 'again'}
+            welcome,please tap yout NFC card {nfclink == 1 && 'again'}
           </Text>
           <Image style={styles.nfc} source={require('../images/nfc.png')} />
         </View>

@@ -5,6 +5,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {routes} from 'router/index';
+import  i18next from '@/lang/index';
 
 const Stack = createNativeStackNavigator();
 const Screen = Stack.Screen;

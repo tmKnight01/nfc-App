@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   StyleSheet,
   View,
@@ -7,68 +7,58 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
+
 import PagerView from 'react-native-pager-view';
+import useTimeNavigate from '@/hooks/useTimeNavigate';
 import {get} from 'lodash-es';
-import {getProfileAsset} from 'services/api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getProfileAsset, setConfigurable} from 'services/api';
 import AssetRenderItem from '@/components/AssetRenderItem';
-import {sha3_512} from 'js-sha3';
 import pxToDp from 'utils/pxToDp';
 import {showToast} from 'utils';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function CardResut({route}) {
   const [assetArr, setAssetArr] = useState([]);
-  const [version, setVersion] = useState('');
-  const {nfcToPin, decviceID} = route.params;
-
+  const {decviceID} = route.params;
   useEffect(() => {
+    // 2wyEGL6X9PlBLN1K9Jiekc3wt8wrIS6ZucQkreM4
+
     (async () => {
       try {
         const apiKey = await AsyncStorage.getItem('apikey');
-        console.log('by hashed decviceId', sha3_512(decviceID));
-        console.log('nffTopin', sha3_512(nfcToPin));
-        console.log('Authorization1', 'Bearer ' + apiKey?.replace(/\"/g, ''));
-        const data = await getProfileAsset(
+        const version = await AsyncStorage.getItem('version');
+        getProfileAsset(
           {
-            d: sha3_512(nfcToPin),
-            a: sha3_512(decviceID),
+            d: 'hash005',
           },
-          `Bearer ${apiKey?.replace(/\"/g, '')}`,
-        );
-        if (Array.isArray(data?.d)) setAssetArr(data?.d);
-        if (data?.v) setVersion(data?.v);
-      } catch (err) {
-        console.log('err', err);
-        showToast(err);
-      }
+          `Bearer ${apiKey?.replace(/\",''/)}`,
+        )
+          .then(value => {
+            console.log('value', value);
+            if (Array.isArray(value.d)) setAssetArr(value.d);
+            if (value.v && value.v > version) {
+              //调用配置接口
+              setConfigurable(`Bearer ${apiKey?.replace(/\",''/)}`)
+                .then(data => {
+                  if (data) {
+                    Object.keys(data).forEach(key => {
+                      const value = data[key];
+                      AsyncStorage.setItem(key, JSON.stringify(value));
+                    });
+                  }
+                })
+                .catch(err => {
+                  console.log('err', err);
+                  showToast('err:', err);
+                });
+            }
+          })
+          .catch(err => {
+            console.log('err', err);
+          });
+      } catch (err) {}
     })();
   }, []);
-
-  useEffect(() => {
-    if (version) {
-      // 当版本更新后，更新app的配置项
-      // DeviceInfo.getAndroidId().then(async androidId => {
-
-      // const hashDecviceID = sha3_512(decviceID);
-      // if (hashDecviceID) {
-      (async () => {
-        try {
-          const data = await getRegisterLanding({a: sha3_512(decviceID)});
-          if (data) {
-            Object.keys(data).forEach(key => {
-              const value = data[key];
-              AsyncStorage.setItem(key, JSON.stringify(value));
-            });
-          }
-        } catch (err) {
-          showToast(err);
-          console.log('err', err);
-        }
-      })();
-      // }
-      // });
-    }
-  }, [version]);
 
   return (
     <View style={styles.continer}>

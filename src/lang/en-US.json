@@ -1,0 +1,8 @@
+{
+    "welcome": "welcome",
+    "tap": "please tap your NFC card",
+    "tapAgain": "please tap your NFC card again",
+    "pin": "Enter Pin",
+    "nfcWallet": "NFC Wallet",
+    "noRecord": "No record result."
+}

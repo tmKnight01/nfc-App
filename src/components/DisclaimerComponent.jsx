@@ -12,35 +12,38 @@ import React, {
   Animated,
   Image,
   TouchableWithoutFeedback,
+  Modal,
 } from 'react-native';
 import {WebView} from 'react-native-webview';
 import {renderHTML} from '@/utils/index';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+// import Modal from 'react-native-modal';
 
-const DisclaimerComponent = forwardRef((_, ref) => {
+const DisclaimerComponent = forwardRef((props, ref) => {
+  const {isVisible, setIsVisible} = props;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [htmlPre, setHtmlPre] = useState('');
 
-  const fadeIn = () => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 200,
-      useNativeDriver: true,
-    }).start();
-  };
-  const fadeOut = () => {
-    // Will change fadeAnim value to 0 in 3 seconds
-    Animated.timing(fadeAnim, {
-      toValue: 0,
-      duration: 200,
-      useNativeDriver: true,
-    }).start();
-  };
+  // const fadeIn = () => {
+  //   Animated.timing(fadeAnim, {
+  //     toValue: 1,
+  //     duration: 200,
+  //     useNativeDriver: true,
+  //   }).start();
+  // };
+  // const fadeOut = () => {
+  //   // Will change fadeAnim value to 0 in 3 seconds
+  //   Animated.timing(fadeAnim, {
+  //     toValue: 0,
+  //     duration: 200,
+  //     useNativeDriver: true,
+  //   }).start();
+  // };
 
-  useImperativeHandle(ref, () => ({
-    fadeIn,
-    fadeOut,
-  }));
+  // useImperativeHandle(ref, () => ({
+  //   fadeIn,
+  //   fadeOut,
+  // }));
 
   // const texts = [
   //   `By using our DATM Kiosk service, you haveagreed to our terms and conditions.
@@ -72,36 +75,30 @@ const DisclaimerComponent = forwardRef((_, ref) => {
     AsyncStorage.getItem('disclaimer_page').then(value => {
       if (value) setHtmlPre(value);
     });
-  });
+  }, []);
 
   return (
-    <Animated.View
-      style={[CSS.container, {opacity: fadeAnim, zIndex: fadeAnim}]}>
-      <View style={CSS.modal}>
-        <View style={CSS.title}>
-          <TouchableWithoutFeedback onPress={fadeOut}>
-            <Image
-              style={{width: pxToDp(30), height: pxToDp(40)}}
-              source={require('../images/close.png')}
-            />
-          </TouchableWithoutFeedback>
+    <Modal animationType="slide" visible={isVisible} transparent={true}>
+      <View style={CSS.container}>
+        <View style={CSS.modal}>
+          <View style={CSS.title}>
+            <TouchableWithoutFeedback onPress={() => setIsVisible(false)}>
+              <Image
+                style={{width: pxToDp(30), height: pxToDp(40)}}
+                source={require('../images/close.png')}
+              />
+            </TouchableWithoutFeedback>
+          </View>
+          <WebView source={{html: renderHTML(htmlPre)}} style={CSS.content} />
         </View>
-        {/* <WebView style={CSS.content}>
-          <FlatList data={texts} renderItem={renderItem} style={{flex: 1}} />
-        </View> */}
-        <WebView source={{html: renderHTML(htmlPre)}} style={CSS.content} />
       </View>
-    </Animated.View>
+    </Modal>
   );
 });
 
 const CSS = StyleSheet.create({
   container: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',

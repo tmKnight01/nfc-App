@@ -1,4 +1,4 @@
-import {useRef} from 'react';
+import {useRef, useState} from 'react';
 import {
   View,
   Image,
@@ -13,6 +13,7 @@ import pxToDp from 'utils/pxToDp';
 
 function MainBackgroundPage(props) {
   const {children, footer} = props;
+  const [isVisible, setIsVisible] = useState(false);
   const childRef = useRef();
 
   return (
@@ -22,10 +23,14 @@ function MainBackgroundPage(props) {
         style={{
           ...styles.mainContainer,
         }}>
-        <DisclaimerComponent ref={childRef} />
+        <DisclaimerComponent
+          ref={childRef}
+          isVisible={isVisible}
+          setIsVisible={setIsVisible}
+        />
         <View style={styles.top}>
           <TouchableOpacity
-            onPress={() => childRef.current.fadeIn()}
+            onPress={() => setIsVisible(true)}
             activeOpacity={1}>
             <Image
               style={{width: pxToDp(48), height: pxToDp(48)}}
