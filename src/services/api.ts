@@ -1,6 +1,4 @@
 import intance from 'services';
-import DeviceInfo from 'react-native-device-info';
-import { sha3_512 } from 'js-sha3';
 
 export interface AssetItem {
     t: string; // mime type of asset: image/jpeg, image/png, video/mp4
@@ -14,25 +12,26 @@ interface asssetResponse {
     d: Array<AssetItem>;
 }
 
-let X_API_KEY = "";
+// let X_API_KEY = "";
 
-DeviceInfo.getAndroidId().then(androidId => {
-    if (androidId) X_API_KEY = sha3_512(androidId);
-}).catch(err => {
-    console.log('getAndroidId Error:', err);
-})
+// DeviceInfo.getAndroidId().then(androidId => {
+//     if (androidId) X_API_KEY = sha3_512(androidId);
+// }).catch(err => {
+//     console.log('getAndroidId Error:', err);
+// })
 
 // get asset
 export const getProfileAsset = (
     data: Record<string, unknown>,
     apiKey: string,
+    x_api_key: string
 ): Promise<asssetResponse> =>
     intance.post('/api/v0.2/asset', data, {
         headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json',
             Authorization: apiKey,
-            "x-api-key": X_API_KEY
+            "x-api-key": x_api_key
         },
     });
 
@@ -60,24 +59,25 @@ interface ApiKeyResponse {
 
 
 // register -landing
-export const getRegisterLanding = (): Promise<ApiKeyResponse> =>
+export const getRegisterLanding = (x_api_key: string): Promise<ApiKeyResponse> =>
     intance.post('/api/v0.2/landing', {}, {
         headers: {
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "x-api-key": X_API_KEY
+            "x-api-key": x_api_key
         }
     });
 
 // Get configurable items
 export const setConfigurable = (
     apiKey: string,
+    x_api_key: string
 ): Promise<ConfigResponse> =>
     intance.post('/api/v0.2/config', {}, {
         headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json',
             Authorization: apiKey,
-            'x-api-key': X_API_KEY,
+            'x-api-key': x_api_key,
         },
     });

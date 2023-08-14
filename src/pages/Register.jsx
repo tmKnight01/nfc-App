@@ -22,11 +22,12 @@ function Resgister() {
       try {
         const androidId = await DeviceInfo.getAndroidId();
         qrRef.current = sha3_512(androidId);
-        const obj = await getRegisterLanding();
+        const obj = await getRegisterLanding(qrRef.current );
         if (obj && obj.authkey) {
           setRegisterOrNfc(true);
           const data = await setConfigurable(
             `Bearer ${obj.authkey.replace(/\"/, '')}`,
+            qrRef.current,
           );
           Object.keys(data).forEach(key => {
             const value = data[key];
@@ -67,7 +68,7 @@ function Resgister() {
   };
 
   const FirstText = 'Please register device first';
-  const QRText = `Scan QR code for complete registrantion.`;
+  const QRText = `Scan QR code for complete registrantion`;
 
   const Header = () => (
     <Text style={resgisterCSS.headerText}>{isShowQR ? QRText : FirstText}</Text>

@@ -2,8 +2,8 @@ import React from 'react';
 import {View, StyleSheet, Image} from 'react-native';
 import {AssetItem} from '@/services/api';
 import {isEmpty, get} from 'lodash-es';
-// import Video from 'react-native-video';
 import VideoPlayer from 'react-native-video-controls';
+
 import pxToDp from 'utils/pxToDp';
 
 interface ItemProps {
@@ -12,14 +12,16 @@ interface ItemProps {
 
 function RenderItem({item}: ItemProps) {
   const isStartsWithHttp = (str: string) => str.startsWith('http');
-  console.log('item_value', item);
   if (isEmpty(item)) return null;
 
   if ((get(item?.t?.split('/'), '[0]', '') as string) == 'video')
     return (
       <View style={{width: pxToDp(300), height: pxToDp(250)}}>
         <VideoPlayer
+          controlAnimationTiming={200}
           disableBack
+          repeat
+          disableFullscreen
           resizeMode="contain"
           source={{uri: get(item, 'b', '')}}
           style={{

@@ -57,7 +57,7 @@ function PinPage({route}) {
         setLoading(false);
         numberList.current = ['', '', '', ''];
         setInputValues([...numberList.current]);
-      }, 500);
+      }, 0);
     });
   };
 

@@ -73,7 +73,12 @@ const DisclaimerComponent = forwardRef((props, ref) => {
   // };
   useEffect(() => {
     AsyncStorage.getItem('disclaimer_page').then(value => {
-      if (value) setHtmlPre(value);
+      console.log('htmlValue', JSON.parse(value).en);
+      try {
+        if (value) setHtmlPre(JSON.parse(value).en);
+      } catch (err) {
+        console.log('err', err);
+      }
     });
   }, []);
 

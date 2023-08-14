@@ -10,15 +10,18 @@ import {
 
 import PagerView from 'react-native-pager-view';
 import useTimeNavigate from '@/hooks/useTimeNavigate';
+import VideoPlayer from 'react-native-media-console';
 import {get} from 'lodash-es';
 import {getProfileAsset, setConfigurable} from 'services/api';
 import AssetRenderItem from '@/components/AssetRenderItem';
 import pxToDp from 'utils/pxToDp';
 import {showToast} from 'utils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {sha3_512} from 'js-sha3';
 
 function CardResut({route}) {
   const [assetArr, setAssetArr] = useState([]);
+  const panResPonser = useTimeNavigate();
   const {decviceID} = route.params;
   useEffect(() => {
     // 2wyEGL6X9PlBLN1K9Jiekc3wt8wrIS6ZucQkreM4
@@ -27,11 +30,12 @@ function CardResut({route}) {
       try {
         const apiKey = await AsyncStorage.getItem('apikey');
         const version = await AsyncStorage.getItem('version');
-        getProfileAsset(
+        const x_api_key = await getProfileAsset(
           {
             d: 'hash005',
           },
           `Bearer ${apiKey?.replace(/\",''/)}`,
+          decviceID,
         )
           .then(value => {
             console.log('value', value);
@@ -61,7 +65,7 @@ function CardResut({route}) {
   }, []);
 
   return (
-    <View style={styles.continer}>
+    <View style={styles.continer} {...panResPonser}>
       <View style={styles.resultTop}>
         <Image
           style={styles.resultLogo}
@@ -69,6 +73,7 @@ function CardResut({route}) {
         />
         <Text style={styles.resultText}>NFC Wallet</Text>
       </View>
+
       {assetArr && assetArr.length > 0 ? (
         <PagerView style={{flex: 1, width: '100%'}} initialPage={0}>
           {assetArr?.map((item, index) => (
