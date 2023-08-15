@@ -15,13 +15,12 @@ import {useNavigation, StackActions} from '@react-navigation/native';
 import {ROUTE} from '@/utils/constant';
 import pxToDp from 'utils/pxToDp';
 
-
 function PinPage({route}) {
-  const numberList = useRef(['', '', '', '']);
-  const [inputValues, setInputValues] = useState(['', '', '', '']);
+  const numberList = useRef(['', '', '', '', '', '']);
+  const [inputValues, setInputValues] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
-  const password = 5087;
+  const password = 654321;
 
   const {nfcTag} = route.params;
   console.log('nfcTag', nfcTag);
@@ -39,14 +38,14 @@ function PinPage({route}) {
   const onFinish = () => {
     setLoading(true);
     DeviceInfo.getAndroidId().then(androidId => {
-
       setTimeout(() => {
         const pin = Number(numberList.current.join(''));
         if (pin === password) {
           showToast('Success');
+          console.log('nfcTopin', sha3_512(nfcTag?.id + '' + pin));
           navigation.dispatch(
             StackActions.replace(ROUTE.CARDPAGE, {
-              nfcToPin: `${nfcTag?.id}${pin}`,
+              nfcToPin: sha3_512(nfcTag?.id + '' + pin),
               decviceID: sha3_512(androidId),
             }),
           );
@@ -55,7 +54,7 @@ function PinPage({route}) {
         }
 
         setLoading(false);
-        numberList.current = ['', '', '', ''];
+        numberList.current = ['', '', '', '', '', ''];
         setInputValues([...numberList.current]);
       }, 0);
     });

@@ -10,7 +10,6 @@ import {
 
 import PagerView from 'react-native-pager-view';
 import useTimeNavigate from '@/hooks/useTimeNavigate';
-import VideoPlayer from 'react-native-media-console';
 import {get} from 'lodash-es';
 import {getProfileAsset, setConfigurable} from 'services/api';
 import AssetRenderItem from '@/components/AssetRenderItem';
